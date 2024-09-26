@@ -207,10 +207,10 @@ coverage html
 
 ## Полученный результат
 
-![unittest](/assets/img/unittest.png)
+![unittest](./assets/img/unittest.png)
 
-![coverage](/assets/img/coverage.png)
+![coverage](./assets/img/coverage.png)
 
 ## HTML
 
-![coverage-html](/assets/img/coverage-html.png)
+![coverage-html](./assets/img/coverage-html.png)
