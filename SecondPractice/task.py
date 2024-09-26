@@ -121,7 +121,8 @@ class Receipt:
 # (П)етраков-> (П)арфе - Входные аргументы для второй практической работы
 
 if __name__ == "__main__":
-    receipt_from_api = {
+    # First recipe - Яичница с беконом и помидорами
+    receipt_from_api_egg = {
         "title": "Яичница с беконом и помидорами.",
         "ingredients_list": [
             ("Яйцо", 80, 70, 20),
@@ -130,8 +131,28 @@ if __name__ == "__main__":
         ],
     }
 
-    receipt = Receipt(receipt_from_api["title"], receipt_from_api["ingredients_list"])
+    receipt_egg = Receipt(receipt_from_api_egg["title"], receipt_from_api_egg["ingredients_list"])
     print(
-        f"Общий вес сырого продукта: {receipt.calc_weight()}\nОбщий вес готового продукта: {receipt.calc_weight(raw=False)}\n"
+        f"Общий вес сырого продукта для '{receipt_egg.name}': {receipt_egg.calc_weight()}\n"
+        f"Общий вес готового продукта: {receipt_egg.calc_weight(raw=False)}\n"
     )
-    print(receipt.__str__())
+    print(receipt_egg)
+
+    # Second recipe - Парфе с ягодами и сливками
+    receipt_from_api_parfait = {
+        "title": "Парфе с ягодами и сливками.",
+        "ingredients_list": [
+            ("Йогурт", 200, 180, 50),
+            ("Сливки", 100, 90, 100),
+            ("Ягоды", 150, 150, 120),
+            ("Мёд", 50, 50, 80),
+            ("Мюсли", 60, 60, 40)
+        ]
+    }
+
+    receipt_parfait = Receipt(receipt_from_api_parfait["title"], receipt_from_api_parfait["ingredients_list"])
+    print(
+        f"Общий вес сырого продукта для '{receipt_parfait.name}': {receipt_parfait.calc_weight()}\n"
+        f"Общий вес готового продукта: {receipt_parfait.calc_weight(raw=False)}\n"
+    )
+    print(receipt_parfait)
