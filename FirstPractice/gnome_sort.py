@@ -1,4 +1,4 @@
-def gnome_sort(array):
+def sort(array):
     if not isinstance(array, list):  # Проверка, что аргумент является списком!
         raise TypeError("Аргумент должен быть списком")
     
@@ -13,3 +13,4 @@ def gnome_sort(array):
             array[index], array[index - 1] = array[index - 1], array[index]
             index -= 1
     return array
+
