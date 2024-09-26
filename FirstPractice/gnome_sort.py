@@ -1,8 +1,8 @@
 def sort(array):
-    if not isinstance(array, list):  # Проверка, что аргумент является списком!
+    if not isinstance(array, list):  # --аргумент является списком--
         raise TypeError("Аргумент должен быть списком")
     
-    if not all(isinstance(x, (int, float)) for x in array):  # Проверка, что все элементы списка числа!
+    if not all(isinstance(x, (int, float)) for x in array):  # --проверка, что все элементы списка числа--
         raise ValueError("Все элементы списка должны быть числами")
 
     index = 0
