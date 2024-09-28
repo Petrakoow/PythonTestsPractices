@@ -25,11 +25,29 @@
 class Ingredient:
     MAX_COST = 1000
 
-    def __init__(self, name: str, raw_weight: (int, float), cooked_weight: (int, float), cost: (int, float)) -> None:
+    def __init__(
+        self,
+        name: str,
+        raw_weight: (int, float),
+        cooked_weight: (int, float),
+        cost: (int, float),
+    ) -> None:
         self.name = name
         self.raw_weight = raw_weight
         self.cooked_weight = cooked_weight
         self.cost = cost
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Name must be a string.")
+        if not value.strip():
+            raise ValueError("Name cannot be empty.")
+        self._name = value
 
     @property
     def raw_weight(self):
@@ -143,11 +161,8 @@ class Receipt:
 #### Пример юнит-тестов
 
 ```python
-import unittest
-from task import Ingredient, Receipt
-
 class TestIngredient(unittest.TestCase):
-
+    
     @classmethod
     def setUpClass(cls):
         cls.valid_ingredient_data = {
@@ -157,7 +172,7 @@ class TestIngredient(unittest.TestCase):
             "cost": 20
         }
         cls.invalid_cost_data = -10
-
+    
     def setUp(self):
         self.ingredient = Ingredient(
             self.valid_ingredient_data['name'],
@@ -174,14 +189,59 @@ class TestIngredient(unittest.TestCase):
         cls.valid_ingredient_data = None
         cls.invalid_cost_data = None
 
-    # Тесты на проверку валидности
     def test_valid_ingredient(self):
         self.assertEqual(self.ingredient.name, "Яйцо")
         self.assertEqual(self.ingredient.raw_weight, 80)
         self.assertEqual(self.ingredient.cooked_weight, 70)
         self.assertEqual(self.ingredient.cost, 20)
 
-# Аналогичные тесты для класса Receipt...
+    def test_invalid_raw_weight(self):
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", -10, 70, 20)
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 0, 70, 20)
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", "двадцать", 70, 20)
+
+    def test_invalid_cooked_weight(self):
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, -10, 20)
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, 0, 20)
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, "двадцать", 20)
+
+    def test_invalid_cost(self):
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, 70, self.invalid_cost_data)
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, 70, 2000)  # exceeds MAX_COST
+        with self.assertRaises(ValueError):
+            Ingredient("Яйцо", 80, 70, "двадцать")
+
+    def test_zero_cost(self):
+        ingredient = Ingredient("Яйцо", 80, 70, 0)
+        self.assertEqual(ingredient.cost, 0)
+
+    def test_boundary_cost(self):
+        ingredient = Ingredient("Яйцо", 80, 70, 1000)  # MAX_COST
+        self.assertEqual(ingredient.cost, 1000)
+
+    def test_float_weights_and_cost(self):
+        ingredient = Ingredient("Яйцо", 80.5, 70.5, 19.99)
+        self.assertEqual(ingredient.raw_weight, 80.5)
+        self.assertEqual(ingredient.cooked_weight, 70.5)
+        self.assertEqual(ingredient.cost, 19.99)
+
+    def test_name_as_non_string(self):
+        with self.assertRaises(TypeError):
+            Ingredient(123, 80, 70, 20)
+
+    def test_empty_name(self):
+        with self.assertRaises(ValueError):
+            Ingredient("", 80, 70, 20)
+
+# Схожие тесты для класса Receipt...
 
 if __name__ == "__main__":
     unittest.main()
