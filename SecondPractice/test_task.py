@@ -11,7 +11,7 @@ class TestIngredient(unittest.TestCase):
             "cooked_weight": 70,
             "cost": 20
         }
-        cls.invalid_cost_data = -10  
+        cls.invalid_cost_data = -10
     
     def setUp(self):
         self.ingredient = Ingredient(
@@ -28,7 +28,7 @@ class TestIngredient(unittest.TestCase):
     def tearDownClass(cls):
         cls.valid_ingredient_data = None
         cls.invalid_cost_data = None
-    
+
     def test_valid_ingredient(self):
         self.assertEqual(self.ingredient.name, "Яйцо")
         self.assertEqual(self.ingredient.raw_weight, 80)
@@ -73,64 +73,166 @@ class TestIngredient(unittest.TestCase):
         self.assertEqual(ingredient.cooked_weight, 70.5)
         self.assertEqual(ingredient.cost, 19.99)
 
+    def test_name_as_non_string(self):
+        with self.assertRaises(TypeError):
+            Ingredient(123, 80, 70, 20)
 
-class TestReceipt(unittest.TestCase):
+    def test_empty_name(self):
+        with self.assertRaises(ValueError):
+            Ingredient("", 80, 70, 20)
+
+
+class TestReceiptSurname(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.valid_receipt_data = [("Яйцо", 80, 70, 20), ("Бекон", 200, 100, 300)]
-        cls.receipt_name = "Яичница с беконом"
+        cls.receipt_from_api_parfait = {
+            "title": "Парфе с ягодами и сливками.",
+            "ingredients_list": [
+                ("Йогурт", 200, 180, 50),
+                ("Сливки", 100, 90, 100),
+                ("Ягоды", 150, 150, 120),
+                ("Мёд", 50, 50, 80),
+                ("Мюсли", 60, 60, 40)
+            ]
+        }
     
     def setUp(self):
-        self.receipt = Receipt(self.receipt_name, self.valid_receipt_data)
+        self.receipt_parfait = Receipt(
+            self.receipt_from_api_parfait["title"],
+            self.receipt_from_api_parfait["ingredients_list"]
+        )
 
     def tearDown(self):
-        del self.receipt
+        del self.receipt_parfait
 
     @classmethod
     def tearDownClass(cls):
-        cls.valid_receipt_data = None
-        cls.receipt_name = None
+        cls.receipt_from_api_parfait = None
 
     def test_valid_receipt(self):
-        self.assertEqual(self.receipt.name, self.receipt_name)
-        self.assertEqual(len(self.receipt.ingredients), 2)
+        self.assertEqual(self.receipt_parfait.name, "Парфе с ягодами и сливками.")
+        self.assertEqual(len(self.receipt_parfait.ingredients), 5)
 
-    def test_invalid_receipt_name(self):
-        with self.assertRaises(ValueError):
-            Receipt("", [("Яйцо", 80, 70, 20)])  # empty name
-        with self.assertRaises(ValueError):
-            Receipt(123, [("Яйцо", 80, 70, 20)])  # non-string name
+    def test_calc_cost(self):
+        self.assertEqual(self.receipt_parfait.calc_cost(), 390) 
+        self.assertEqual(self.receipt_parfait.calc_cost(2), 780) 
+
+    def test_calc_weight(self):
+        self.assertEqual(self.receipt_parfait.calc_weight(), 560)  
+        self.assertEqual(self.receipt_parfait.calc_weight(raw=False), 530)  
+        self.assertEqual(self.receipt_parfait.calc_weight(portions=2), 1120) 
 
     def test_invalid_ingredient_list(self):
         with self.assertRaises(ValueError):
-            Receipt("Яичница", [])  # empty ingredient list
+            Receipt("Парфе", []) 
+    
+    def test_invalid_ingredient_list(self):
         with self.assertRaises(ValueError):
-            Receipt("Яичница", [("Яйцо", 80, 70, 20), ("Недопустимый", -10, 70, 20)])  # invalid ingredient
+            Receipt("Парфе", [])
+        with self.assertRaises(ValueError):
+            Receipt("Парфе", [("Сахар", -100, 90, 50)])
+
+    def test_receipt_with_single_ingredient(self):
+        receipt_single = Receipt("Простой рецепт", [("Вода", 100, 100, 0)])
+        self.assertEqual(receipt_single.calc_cost(), 0)
+        self.assertEqual(receipt_single.calc_weight(), 100)
+
+    def test_receipt_as_string(self):
+        receipt_str = str(self.receipt_parfait)
+        self.assertIn("Парфе с ягодами и сливками.", receipt_str)
+        self.assertIn("Йогурт", receipt_str)
+        self.assertIn("Мюсли", receipt_str)
+
+
+class TestReceiptName(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.receipt_from_api_erundopel = {
+            "title": "Ерундопель - Запечённое лакомство с секретом.",
+            "ingredients_list": [
+                ("Творог", 250, 230, 180),
+                ("Сметана", 100, 95, 80),
+                ("Яйца", 2, 2, 50),  
+                ("Сахар", 80, 80, 40),
+                ("Мука", 100, 100, 90),
+                ("Ванилин", 1, 1, 5)
+            ]
+        }
+        cls.invalid_ingredient_list = [("Мука", -100, 100, 90)]  
+    
+    def setUp(self):
+        self.receipt_erundopel = Receipt(
+            self.receipt_from_api_erundopel["title"],
+            self.receipt_from_api_erundopel["ingredients_list"]
+        )
+
+    def tearDown(self):
+        del self.receipt_erundopel
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.receipt_from_api_erundopel = None
+        cls.invalid_ingredient_list = None
+
+    def test_valid_receipt(self):
+        self.assertEqual(self.receipt_erundopel.name, "Ерундопель - Запечённое лакомство с секретом.")
+        self.assertEqual(len(self.receipt_erundopel.ingredients), 6)
+
+    def test_invalid_receipt_name(self):
+        with self.assertRaises(ValueError):
+            Receipt("", self.receipt_from_api_erundopel["ingredients_list"])
+        with self.assertRaises(ValueError):
+            Receipt(123, self.receipt_from_api_erundopel["ingredients_list"])  
+
+    def test_invalid_ingredient_list(self):
+        with self.assertRaises(ValueError):
+            Receipt("Невалидный рецепт", [])  
+        with self.assertRaises(ValueError):
+            Receipt("Невалидный рецепт", self.invalid_ingredient_list) 
+
+    def test_invalid_receipt_with_invalid_ingredient(self):
+        with self.assertRaises(ValueError):
+            Receipt("Невалидный рецепт", [("Мука", -100, 100, 90)])  
+
+    def test_receipt_with_duplicate_ingredients(self):
+        duplicate_ingredients = [
+            ("Творог", 250, 230, 180),
+            ("Творог", 250, 230, 180)
+        ]
+        receipt = Receipt("Дублирующийся рецепт", duplicate_ingredients)
+        self.assertEqual(len(receipt.ingredients), 2)
+
+    def test_empty_ingredient_name(self):
+        with self.assertRaises(ValueError):
+            Receipt("Невалидный рецепт", [("", 100, 100, 50)])
+
+    def test_receipt_as_string(self):
+        receipt_str = str(self.receipt_erundopel)
+        self.assertIn("Ерундопель - Запечённое лакомство с секретом.", receipt_str)
+        self.assertIn("Творог", receipt_str)
+        self.assertIn("Ванилин", receipt_str)
 
     def test_calc_cost(self):
-        self.assertEqual(self.receipt.calc_cost(), 320)  # 20 + 300
-        self.assertEqual(self.receipt.calc_cost(2), 640)  # 320 * 2
+        self.assertEqual(self.receipt_erundopel.calc_cost(), 445)
+        self.assertEqual(self.receipt_erundopel.calc_cost(2), 890) 
 
     def test_calc_weight(self):
-        self.assertEqual(self.receipt.calc_weight(), 280)  # 80 + 200
-        self.assertEqual(self.receipt.calc_weight(raw=False), 170)  # 70 + 100
-        self.assertEqual(self.receipt.calc_weight(portions=2), 560)  # 280 * 2
-        
+        self.assertEqual(self.receipt_erundopel.calc_weight(), 533)
+        self.assertEqual(self.receipt_erundopel.calc_weight(raw=False), 508)  
+
     def test_receipt_with_single_ingredient(self):
-        receipt = Receipt("Яичница", [("Яйцо", 80, 70, 20)])
-        self.assertEqual(receipt.calc_cost(), 20)
-        self.assertEqual(receipt.calc_weight(), 80)
-        self.assertEqual(receipt.calc_weight(raw=False), 70)
+        receipt_single = Receipt("Простой рецепт", [("Вода", 100, 100, 0)])
+        self.assertEqual(receipt_single.calc_cost(), 0)
+        self.assertEqual(receipt_single.calc_weight(), 100)
 
-    def test_receipt_with_float_ingredients(self):
-        receipt = Receipt("Смузи", [("Банан", 150.5, 130.5, 60.5), ("Клубника", 100.2, 90.2, 40.2)])
-        self.assertAlmostEqual(receipt.calc_cost(), 100.7)  # 60.5 + 40.2
-        self.assertAlmostEqual(receipt.calc_weight(), 250.7)  # 150.5 + 100.2
+    def test_large_ingredient_list(self):
+        large_ingredient_list = [("Ингредиент_" + str(i), 100, 90, 50) for i in range(100)]
+        receipt_large = Receipt("Большой рецепт", large_ingredient_list)
+        self.assertEqual(receipt_large.calc_cost(), 5000) 
+        self.assertEqual(receipt_large.calc_weight(), 10000)  
 
-    def test_receipt_name_case_insensitivity(self):
-        receipt = Receipt("ЯИЧНИЦА", [("Яйцо", 80, 70, 20), ("Бекон", 200, 100, 300)])
-        self.assertEqual(receipt.name.lower(), "яичница".lower())  # Check case insensitivity
 
 if __name__ == "__main__":
     unittest.main()

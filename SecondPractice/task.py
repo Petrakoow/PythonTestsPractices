@@ -14,6 +14,18 @@ class Ingredient:
         self.cost = cost
 
     @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if not isinstance(value, str):
+            raise TypeError("Name must be a string.")
+        if not value.strip():
+            raise ValueError("Name cannot be empty.")
+        self._name = value
+
+    @property
     def raw_weight(self):
         return self._raw_weight
 
@@ -118,27 +130,12 @@ class Receipt:
             f"Recipe: {self.name}\n###All Receipt Ingredients###\n{ingredient_details}"
         )
 
-# (П)етраков-> (П)арфе - Входные аргументы для второй практической работы
 
 if __name__ == "__main__":
-    # First recipe - Яичница с беконом и помидорами
-    receipt_from_api_egg = {
-        "title": "Яичница с беконом и помидорами.",
-        "ingredients_list": [
-            ("Яйцо", 80, 70, 20),
-            ("Бекон", 200, 100, 300),
-            ("Помидор", 100, 80, 200),
-        ],
-    }
+    # По фамилии:
+    # (П)етраков-> (П)арфе - Входные аргументы для второй практической работы
+    # Парфе с ягодами и сливками
 
-    receipt_egg = Receipt(receipt_from_api_egg["title"], receipt_from_api_egg["ingredients_list"])
-    print(
-        f"Общий вес сырого продукта для '{receipt_egg.name}': {receipt_egg.calc_weight()}\n"
-        f"Общий вес готового продукта: {receipt_egg.calc_weight(raw=False)}\n"
-    )
-    print(receipt_egg)
-
-    # Second recipe - Парфе с ягодами и сливками
     receipt_from_api_parfait = {
         "title": "Парфе с ягодами и сливками.",
         "ingredients_list": [
@@ -153,6 +150,31 @@ if __name__ == "__main__":
     receipt_parfait = Receipt(receipt_from_api_parfait["title"], receipt_from_api_parfait["ingredients_list"])
     print(
         f"Общий вес сырого продукта для '{receipt_parfait.name}': {receipt_parfait.calc_weight()}\n"
-        f"Общий вес готового продукта: {receipt_parfait.calc_weight(raw=False)}\n"
+        f"Общий вес готового продукта для '{receipt_parfait.name}': {receipt_parfait.calc_weight(raw=False)}\n"
     )
     print(receipt_parfait)
+
+    # По имени:
+    # (E)етраков-> (E)рундопель - Входные аргументы для второй практической работы
+    # Ерундопель
+
+    receipt_from_api_erundopel = {
+        "title": "Ерундопель - Запечённое лакомство с секретом.",
+        "ingredients_list": [
+            ("Творог", 250, 230, 180),
+            ("Сметана", 100, 95, 80),
+            ("Яйца", 2, 2, 50),  
+            ("Сахар", 80, 80, 40),
+            ("Мука", 100, 100, 90),
+            ("Ванилин", 1, 1, 5)  
+        ]
+    }
+
+    receipt_erundopel = Receipt(receipt_from_api_erundopel["title"], receipt_from_api_erundopel["ingredients_list"])
+    print(
+        f"Общий вес сырого продукта для '{receipt_erundopel.name}': {receipt_erundopel.calc_weight()}\n"
+        f"Общий вес готового продукта для '{receipt_erundopel.name}': {receipt_erundopel.calc_weight(raw=False)}\n"
+    )
+
+    print(receipt_erundopel)
+
