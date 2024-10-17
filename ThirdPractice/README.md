@@ -1,10 +1,10 @@
 ## Результат работы
 
-![Result work](/img/index.png)
+![Result work](img/index.png)
 
-![Result work](/img/about.png)
+![Result work](img/about.png)
 
-![Result work](/img/receipt.png)
+![Result work](img/receipt.png)
 
 ### Создание виртуального окружения
 
