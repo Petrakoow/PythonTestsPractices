@@ -1,0 +1,64 @@
+<!-- recipe_catalog/about.html -->
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>О нас</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'index' %}">Рецепты</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">О компании</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5 mb-5">
+            <h1 class="text-center mb-4">О нас</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Наш сайт рецептов</h5>
+                    <p class="card-text">
+                        Добро пожаловать на наш сайт рецептов! Мы создали этот проект, чтобы 
+                        сделать приготовление вкусных и полезных блюд доступным для каждого. 
+                        Наша команда страстно увлечена кулинарией и хочет поделиться с вами 
+                        лучшими рецептами, которые мы собрали из разных уголков мира.
+                    </p>
+                    <p class="card-text">
+                        Здесь вы найдёте рецепты для любого случая: от простых ежедневных блюд 
+                        до сложных кулинарных шедевров. Мы также предлагаем рецепты для особых 
+                        диет и пищевых предпочтений, будь то вегетарианские, безглютеновые или 
+                        низкоуглеводные варианты.
+                    </p>
+                    <p class="card-text">
+                        Каждый рецепт снабжен подробной информацией об ингредиентах, процессе 
+                        приготовления и полезными советами. Мы стремимся предоставить вам не 
+                        только рецепты, но и вдохновение для ваших кулинарных приключений!
+                    </p>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="{% url 'index' %}" class="btn btn-primary">Вернуться на главную</a>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
