@@ -1,131 +1,136 @@
-### Практическая работа №3 (Часть 2) - Django проект для управления рецептами
+### Практическая работа №5 (Часть 3) - Django проект для управления рецептами
 
-В этой части практической работы создается функциональность для управления рецептами и ингредиентами, включая модели, настройки панели администратора и отображение данных на страницах.
+В этой части практической работы мы создаём и тестируем важную функциональность для управления рецептами. Задание включает изменения в структуре тестов, создание тестов для маршрутов и проверки контента.
 
 ### Описание задания
-1. **Создание моделей**: В этом задании добавляются модели для рецепта и ингредиента, чтобы хранить информацию о названиях, весе (сырьё и готовое) и стоимости ингредиентов.
-2. **Настройка панели администратора**: Настроена панель администратора Django для удобного управления рецептами и ингредиентами.
-3. **Изменение вьюшек**: Изменены представления для отображения данных рецептов и ингредиентов на страницах.
 
-#### Рекомендации:
-- **Проектирование моделей**: Важно продумать обязательные атрибуты и связи между моделями перед заполнением базы данных. Изменение структуры БД с данными может быть трудоемким.
-- **Презентация работы**: Особое внимание следует уделить внешнему виду страниц. Данные рецептов и ингредиентов должны отображаться аккуратно и организованно.
+В данном проекте были добавлены тесты для проверки:
 
----
+- Корректной работы маршрутов для страниц рецептов, деталей рецепта и страницы "О каталоге".
+- Правильного создания объектов и их атрибутов.
+- Верности расчёта веса блюда при задании ингредиентов в различных единицах измерения.
+- Сортировки ингредиентов по алфавиту.
+
+Также была улучшена модель `Ingredient` с учётом единиц измерения и конверсии для различных единиц (например, ложки, стаканы). Были добавлены соответствующие тесты.
 
 ### Основные этапы выполнения работы
 
-1. **Изучение ORM модели**: Изучена работа с Django ORM для создания моделей и взаимодействия с базой данных.
-2. **Создание моделей и миграции**: Модели для рецептов и ингредиентов созданы с нужными атрибутами, после чего выполнены миграции.
-3. **Настройка панели администратора**: Добавлены настройки панели администратора для работы с моделями.
+1. **Рефакторинг структуры тестов**: Тесты были перемещены в подкаталог `tests`, и теперь разделены на два файла: `test_routes.py` и `test_content.py`.
+2. **Добавление тестов**: Написаны тесты для проверки работы маршрутов, создания объектов, расчёта веса блюда и вывода списка ингредиентов в алфавитном порядке.
+3. **Использование единиц измерения**: В модель `Ingredient` добавлен внешний ключ на модель `Unit` для конверсии ингредиентов в граммы.
 
 ---
 
 ### Код
 
-#### Админка
-
-Панель администратора настроена для управления рецептами и ингредиентами с помощью связующей модели `RecipeIngredient`, которая позволяет задавать множество ингредиентов для каждого рецепта.
-
-```python
-from django.contrib import admin
-from .models import Ingredient, Recipe, RecipeIngredient
-
-class RecipeIngredientInline(admin.TabularInline):
-    model = RecipeIngredient
-    extra = 3
-
-@admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
-    inlines = [RecipeIngredientInline]
-    list_display = ["title"]
-
-@admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
-    list_display = ["title", "raw_weight", "cooked_weight", "cost"]
-```
-
 #### Модели
 
-Включены модели для `Recipe`, `Ingredient` и `RecipeIngredient`. Модель `RecipeIngredient` используется как промежуточная для связи многие ко многим между рецептами и ингредиентами.
+Модель `Ingredient` была обновлена с добавлением поля для единицы измерения:
 
 ```python
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
 
+class Unit(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+    conversion_to_grams = models.FloatField(validators=[MinValueValidator(0.1)])
+
+    def __str__(self):
+        return self.name
+    
 class Ingredient(models.Model):
-    title = models.CharField(
-        max_length=255,
-        validators=[
-            RegexValidator(regex=r'^[A-Za-zА-Яа-яёЁ\s]+$', message='Name should be a string value.')
-        ]
-    )
-    raw_weight = models.FloatField(validators=[MinValueValidator(0.1, 'Raw weight must be a positive number.')])
-    cooked_weight = models.FloatField(validators=[MinValueValidator(0.1, 'Cooked weight must be a positive number.')])
-    cost = models.FloatField(validators=[MinValueValidator(0.1, 'Cost must be a positive number.')])
+    title = models.CharField(max_length=255, validators=[RegexValidator(regex=r'^[A-Za-zА-Яа-яёЁ\s]+$')])
+    raw_weight = models.FloatField(validators=[MinValueValidator(0.1)])
+    cooked_weight = models.FloatField(validators=[MinValueValidator(0.1)])
+    cost = models.FloatField(validators=[MinValueValidator(0.1)])
+    unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'{self.title} (Raw: {self.raw_weight} g, Cooked: {self.cooked_weight} g, Cost: ${self.cost})'
 
-class Recipe(models.Model):
-    title = models.CharField(
-        max_length=300,
-        validators=[
-            RegexValidator(regex=r'^[A-Za-zА-Яа-яёЁ\s]+$', message='Title should be a string value.')
-        ]
-    )
-    ingredients = models.ManyToManyField(Ingredient, through="RecipeIngredient")
-
-    def __str__(self):
-        return self.title
-
-class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.recipe.title} - {self.ingredient.title}'
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['recipe', 'ingredient'], name='unique_recipe_ingredient')
-        ]
+    def save(self, *args, **kwargs):
+        if self.unit:
+            self.raw_weight *= self.unit.conversion_to_grams
+            self.cooked_weight *= self.unit.conversion_to_grams
+        super().save(*args, **kwargs)
 ```
 
-#### Вьюшки
+#### Админ
 
-Добавлены три представления для отображения списка рецептов, детальной информации о рецепте и страницы «О компании».
+Панель администратора была настроена для управления единицами измерения:
 
 ```python
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Sum
-from .models import Recipe
+from django.contrib import admin
+from .models import Ingredient, Recipe, Unit
 
-def index(request):
-    recipes = Recipe.objects.all()
-    return render(request, 'recipe_catalog/index.html', {'recipes': recipes})
+@admin.register(Unit)
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ['name', 'conversion_to_grams']
 
-def about(request):
-    return render(request, 'recipe_catalog/about.html')
-
-def recipe_detail(request, pk):
-    recipe = get_object_or_404(Recipe, pk=pk)
-    total_raw_weight = recipe.ingredients.aggregate(total=Sum('raw_weight'))['total']
-    total_cooked_weight = recipe.ingredients.aggregate(total=Sum('cooked_weight'))['total']
-    total_cost = recipe.ingredients.aggregate(total=Sum('cost'))['total']
-    
-    return render(
-        request,
-        'recipe_catalog/recipe_detail.html',
-        {
-            'recipe': recipe,
-            'total_raw_weight': total_raw_weight,
-            'total_cooked_weight': total_cooked_weight,
-            'total_cost': total_cost,
-        }
-    )
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ['title', 'raw_weight', 'cooked_weight', 'cost', 'unit']
 ```
 
+#### Тесты
+
+Тесты были разделены на два файла: `test_routes.py` и `test_content.py`.
+
+**test_routes.py**
+
+Тесты маршрутов проверяют правильность доступности страниц и ответов:
+
+```python
+from django.test import TestCase
+from django.urls import reverse
+
+class TestRoutes(TestCase):
+    def test_home_page(self):
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_recipe_detail_page(self):
+        recipe = Recipe.objects.create(title="Парфе")
+        response = self.client.get(reverse('recipe_detail', args=[recipe.pk]))
+        self.assertEqual(response.status_code, 200)
+```
+
+**test_content.py**
+
+Тесты содержимого проверяют правильность данных, расчётов и валидации:
+
+```python
+from django.test import TestCase
+from recipe_catalog.models import Ingredient, Recipe, Unit
+
+class TestRecipeWeightCalculation(TestCase):
+    def setUp(self):
+        self.spoon = Unit.objects.create(name='Spoon', conversion_to_grams=20)
+        self.glass = Unit.objects.create(name='Glass', conversion_to_grams=250)
+
+    def test_recipe_total_weight_in_grams(self):
+        ingredient_flour = Ingredient.objects.create(title="Мука", raw_weight=100, cooked_weight=90, cost=50)
+        ingredient_sugar = Ingredient.objects.create(title="Сахар", raw_weight=200, cooked_weight=180, cost=60, unit=self.glass)
+        recipe = Recipe.objects.create(title="Торт")
+        recipe.ingredients.set([ingredient_flour, ingredient_sugar])
+
+        total_weight = recipe.total_weight_in_grams()
+        self.assertEqual(total_weight, 100 + (200 * 250))  # Вес с учётом конверсии стаканов в граммы
+```
+
+### Описание полей
+
+#### Модель `Ingredient`
+- **title** — Название ингредиента.
+- **raw_weight** — Вес ингредиента до приготовления.
+- **cooked_weight** — Вес ингредиента после приготовления.
+- **cost** — Стоимость ингредиента.
+- **unit** — Единица измерения, может быть `Spoon`, `Glass` или любая другая единица с конверсией в граммы.
+
+#### Модель `Recipe`
+- **title** — Название рецепта.
+- **ingredients** — Список ингредиентов, привязанных к рецепту.
 
 ### Заключение
-Эта часть практической работы демонстрирует основные навыки создания и настройки моделей Django, панели администратора и представлений для отображения данных.
+
+Эта часть практической работы демонстрирует улучшение функциональности Django проекта с добавлением новых возможностей для работы с ингредиентами и их единицами измерения, а также создание и тестирование маршрутов и логики отображения данных на страницах.

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from recipe_catalog.models import Unit, Ingredient, Recipe, RecipeIngredient
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.urls import reverse
 
@@ -137,6 +138,68 @@ class TestRecipeWeightWithDifferentUnits(TestCase):
 
         expected_raw_weight = 100 + (200 * 250)
         expected_cooked_weight = 90 + (190 * 250)
+
+        self.assertEqual(total_raw_weight, expected_raw_weight)
+        self.assertEqual(total_cooked_weight, expected_cooked_weight)
+
+class TestUniqueRecipeIngredientConstraintError(TestCase):
+    def setUp(self):
+        self.ingredient_flour = Ingredient.objects.create(
+            title="Мука", raw_weight=100, cooked_weight=90, cost=50
+        )
+        self.recipe = Recipe.objects.create(title="Парфе с ягодами и сливками.")
+        self.recipe.ingredients.set([self.ingredient_flour])
+
+    def test_adding_duplicate_ingredient_should_raise_error(self):
+        with self.assertRaises(IntegrityError):
+            RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_flour)
+
+class TestIngredientValidationErrors(TestCase):
+    def test_create_ingredient_with_invalid_raw_weight(self):
+        ingredient = Ingredient(
+            title="Мука", raw_weight=0.05, cooked_weight=90, cost=50
+        )
+        with self.assertRaises(ValidationError):
+            ingredient.full_clean() 
+
+    def test_create_ingredient_with_invalid_cooked_weight(self):
+        ingredient = Ingredient(
+            title="Мука", raw_weight=100, cooked_weight=0.05, cost=50
+        )
+        with self.assertRaises(ValidationError):
+            ingredient.full_clean()  
+
+    def test_create_ingredient_with_invalid_cost(self):
+        ingredient = Ingredient(
+            title="Мука", raw_weight=100, cooked_weight=90, cost=0.05
+        )
+        with self.assertRaises(ValidationError):
+            ingredient.full_clean() 
+
+class TestRecipeWeightOnDetailPage(TestCase):
+    def setUp(self):
+        self.spoon = Unit.objects.create(name='Spoon', conversion_to_grams=20)
+        self.glass = Unit.objects.create(name='Glass', conversion_to_grams=250)
+
+        self.ingredient_flour = Ingredient.objects.create(
+            title="Мука", raw_weight=100, cooked_weight=90, cost=50
+        )
+        self.ingredient_sugar = Ingredient.objects.create(
+            title="Сахар", raw_weight=200, cooked_weight=190, cost=60, unit=self.glass
+        )
+
+        self.recipe = Recipe.objects.create(title="Торт")
+        self.recipe.ingredients.set([self.ingredient_flour, self.ingredient_sugar])
+
+    def test_recipe_total_weight_on_detail_page(self):
+        url = reverse('recipe_detail', args=[self.recipe.pk])
+        response = self.client.get(url)
+
+        expected_raw_weight = self.ingredient_flour.raw_weight + self.ingredient_sugar.raw_weight
+        expected_cooked_weight = self.ingredient_flour.cooked_weight + self.ingredient_sugar.cooked_weight
+
+        total_raw_weight = response.context['total_raw_weight']
+        total_cooked_weight = response.context['total_cooked_weight']
 
         self.assertEqual(total_raw_weight, expected_raw_weight)
         self.assertEqual(total_cooked_weight, expected_cooked_weight)
