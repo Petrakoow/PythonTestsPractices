@@ -1,0 +1,87 @@
+{% extends '../layout/layout.html' %}
+
+{% block maintitle %}
+    О нас
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4 p-0">
+        <h2 class="text-center text-primary font-weight-bold">Добро пожаловать на My Favorites Recipes</h2>
+        <p class="text-center text-muted">
+            На нашем сайте вы можете легко добавить свои любимые рецепты, делиться ими с другими пользователями и получать отзывы. Мы создали пространство для людей, которые любят готовить и хотят делиться своими кулинарными идеями.
+        </p>
+    </div>
+
+    <div class="container mt-5 p-0">
+        <h3 class="text-left text-primary font-weight-bold">Наши возможности</h3>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Добавление рецептов</h5>
+                        <p class="card-text text-muted">Легко добавляйте рецепты, заполняя форму с названием, ингредиентами и инструкцией.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Просмотр рецептов</h5>
+                        <p class="card-text text-muted">Просматривайте рецепты, добавленные другими пользователями, смотрите разные блюда, от разных людей</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5 p-0">
+        <h3 class="text-left text-primary font-weight-bold">Часто задаваемые вопросы</h3>
+        <div id="faqAccordion">
+            <div class="card">
+                <div class="card-header" id="faqHeadingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link text-dark" type="button" data-toggle="collapse" data-target="#faqCollapseOne" aria-expanded="true" aria-controls="faqCollapseOne">
+                            Как добавить рецепт?
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="faqCollapseOne" class="collapse show" aria-labelledby="faqHeadingOne" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Чтобы добавить рецепт, вам нужно войти в свою учетную запись. Перейдите на страницу "Добавить рецепт", заполните форму и нажмите "Добавить".
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="faqHeadingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link text-dark" type="button" data-toggle="collapse" data-target="#faqCollapseThree" aria-expanded="false" aria-controls="faqCollapseThree">
+                            Могу ли я редактировать мои рецепты?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapseThree" class="collapse" aria-labelledby="faqHeadingThree" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Да, вы можете редактировать свои рецепты в любой момент. Просто перейдите в раздел "Мои рецепты", выберите рецепт и нажмите "Редактировать".
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="faqHeadingFour">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link text-dark" type="button" data-toggle="collapse" data-target="#faqCollapseFour" aria-expanded="false" aria-controls="faqCollapseFour">
+                            Как зарегистрироваться?
+                        </button>
+                    </h5>
+                </div>
+                <div id="faqCollapseFour" class="collapse" aria-labelledby="faqHeadingFour" data-parent="#faqAccordion">
+                    <div class="card-body">
+                        Чтобы зарегистрироваться, перейдите на страницу "Регистрация", заполните форму с вашими данными и нажмите "Зарегистрироваться". После этого вы сможете добавить рецепты и взаимодействовать с другими пользователями.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

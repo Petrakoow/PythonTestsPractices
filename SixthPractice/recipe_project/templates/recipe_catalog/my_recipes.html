@@ -1,0 +1,39 @@
+
+{% extends '../base.html' %}
+
+{% block maintitle %}
+    Мои рецепты
+{% endblock %}
+
+{% block content %}
+
+    {% if recipes_len == 0 %}
+
+        <p class="text-center text-danger font-weight-bold mt-5">У вас пока нет рецептов</p>
+
+    {% endif %}
+    
+    <a class="nav-link btn btn-success text-white" href="{% url 'add_recipe' %}">
+        Добавить рецепт
+    </a>
+
+    <div class="list-group mt-3">
+        {% for recipe in recipes %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <a class="flex-grow-1 text-decoration-none" href="/recipe/{{ recipe.id }}">
+                    {{ recipe.name }}
+                </a>
+                <a class="btn btn-warning text-center ml-2" style="min-width: 100px;" href="{% url 'edit_recipe' recipe.pk %}">
+                    Редактировать
+                </a>
+                <a class="btn btn-danger text-center ml-2" style="min-width: 100px;" href="{% url 'delete_recipe' recipe.pk %}">
+                    Удалить
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+{% endblock %}
+

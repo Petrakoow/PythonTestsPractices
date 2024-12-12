@@ -1,0 +1,57 @@
+<footer class="bg-primary text-white py-4">
+    <div class="container">
+        <div class="row text-center text-md-left">
+
+            <div class="col-md-4 mb-3" style="padding-left: 0px;">
+                <h5 class="font-weight-bold text-uppercase">О нас</h5>
+                <p>
+                    My Favorites Recipes - это место, где вы можете сохранять свои любимые рецепты, предлагать ингредиенты и делиться идеями.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-3" style="padding-left: 0px;">
+                <h5 class="font-weight-bold text-uppercase">Просмотрите ещё</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% url 'about-us' %}" class="text-white text-decoration-none">О нас</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'my_recipes' %}" class="text-white text-decoration-none">Мои рецепты</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'add_ingredient' %}" class="text-white text-decoration-none">Предложить ингредиент</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manage_recipes' %}" class="text-white text-decoration-none">Управление рецептами</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}" class="text-white text-decoration-none">Выйти</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'login' %}" class="text-white text-decoration-none">Войти</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'registration' %}" class="text-white text-decoration-none">Регистрация</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3" style="padding-left: 0px;">
+                <h5 class="font-weight-bold text-uppercase">Контакты</h5>
+                <ul class="list-unstyled">
+                    <li>Email: <a href="mailto:my.receipts@yandex.ru" class="text-white text-decoration-none">my.receipts@yandex.ru</a></li>
+                    <li>Телефон: <a href="tel:+7(999)999-99-99" class="text-white text-decoration-none">+7(999)999-99-99</a></li>
+                    <li>Адрес: Москва, Россия</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col text-center">
+                <p class="mb-0">&copy; 2024 My Favorites Recipes. Все права защищены.</p>
+            </div>
+        </div>
+    </div>
+</footer>

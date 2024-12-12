@@ -1,0 +1,27 @@
+/* HEADER */
+
+.nav-item .nav-link.hover-effect-btn-active:hover {
+    color: black !important;
+}
+
+.nav-items-custom-styles {
+    gap: 10px;
+}
+
+.toggler-button {
+    margin-bottom: 12px;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+main.container {
+    min-height: 100vh;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,53 @@
+{% extends '../layout/layout.html' %}
+
+{% block maintitle %}
+    Список всех рецептов
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4 p-0">
+        <h2 class="mb-4 text-primary font-weight-bold text-left">Рецепты</h2>
+
+        <p class="text-muted mb-4">
+            На этой странице отображаются рецепты, добавленные в ваш аккаунт. Если вы только начали, ваши рецепты будут отображаться здесь после того, как вы их создадите.
+            Если у вас нет рецептов, создайте первый, нажав кнопку ниже, чтобы начать делиться вашими кулинарными идеями с другими!
+        </p>
+        
+        {% if user.is_authenticated %}
+            <p class="text-muted">
+                Вы авторизованы как {{ user.username }}. Теперь вы можете добавлять, редактировать и управлять своими рецептами. 
+                Это ваше пространство для кулинарных творений. Не забудьте поделиться рецептами с друзьями и получать отзывы!
+            </p>
+        {% else %}
+            <p class="text-muted">
+                Для добавления и управления рецептами необходимо войти в свой аккаунт. Если у вас еще нет учетной записи, 
+                вы можете зарегистрироваться и начать добавлять свои любимые рецепты.
+            </p>
+        {% endif %}
+        
+
+        {% if recipes_len == 0 %}
+            <div class="card text-center shadow-sm border-0" style="background-color: #f8f9fa;">
+                <div class="card-body py-5">
+                    <h5 class="card-title text-secondary font-weight-bold">Пока рецептов нет</h5>
+                    <p class="text-muted">Создайте первый рецепт, чтобы начать делиться вкусными идеями!</p>
+                    <a href="{% url 'add-recipe' %}" class="btn btn-primary btn-sm mt-3">Добавить рецепт</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="list-group mt-4">
+                {% for recipe in recipes %}
+                    <a 
+                        class="list-group-item list-group-item-action shadow-sm mb-2 rounded" 
+                        href="/recipe/{{ recipe.id }}" 
+                        style="background-color: #ffffff; transition: transform 0.2s;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark font-weight-bold">{{ recipe.name }}</span>
+                            <span class="badge badge-primary">{{ recipe.category }}</span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

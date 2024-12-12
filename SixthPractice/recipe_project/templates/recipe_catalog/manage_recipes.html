@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Управление рецептами{% endblock %}
+
+{% block content %}
+<h2>Управление рецептами</h2>
+<ul class="list-group">
+    {% for recipe in recipes %}
+    <li class="list-group-item">
+        {{ recipe.name }}
+        <a href="{% url 'delete_ingredient' recipe.id %}" class="btn btn-danger btn-sm float-right ml-2">Удалить ингредиенты</a>
+        <a href="{% url 'edit_ingredient' recipe.id %}" class="btn btn-warning btn-sm float-right ml-2">Изменить ингредиенты</a>
+        <a href="{% url 'add_ingredient_to_recipe_action' recipe.id %}" class="btn btn-success btn-sm float-right">Добавить ингредиент</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

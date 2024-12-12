@@ -1,0 +1,38 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Добавить рецепт{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded">
+                <div class="card-body">
+                    <h2 class="text-center text-primary font-weight-bold mb-4">Форма добавления рецепта</h2>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }} 
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block rounded-pill">Добавить рецепт</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
