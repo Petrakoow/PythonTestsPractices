@@ -1,0 +1,18 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Удалить единицу измерения{% endblock %}
+
+{% block content %}
+<div class="container mt-4 p-0">
+    <h2 class="text-center mb-4 text-danger">Удалить единицу измерения</h2>
+
+    <div class="text-center shadow-sm p-4 rounded bg-light border">
+        <p>Вы уверены, что хотите удалить единицу измерения <strong>{{ unit.name }}</strong>?</p>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger px-4">Удалить</button>
+            <a href="{% url 'manage-units' %}" class="btn btn-secondary px-4">Отменить</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

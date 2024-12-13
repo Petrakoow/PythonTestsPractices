@@ -1,36 +1,42 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3 shadow-sm">
-        <div class="container" style="padding: 0px;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3 shadow-sm mb-4">
+        <div class="container-fluid">
             <a class="navbar-brand font-weight-bold text-uppercase" href="{% url 'main' %}">
-                My Favorites Recipes
+                РЕЦЕПТЫ
             </a>
-            <button class="navbar-toggler toggler-button" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon toggler-button-ic"></span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto nav-items-custom-styles ">
+                <ul class="navbar-nav ml-auto">
                     <li class="nav-item gap-3">
-                        <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'about-us' %}">О нас</a>
+                        <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'about-us' %}">О нас</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'my_recipes' %}">Мои рецепты</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'your-recipes' %}">Мои рецепты</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'add_ingredient' %}">Предложить ингредиент</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'add-ingredient' %}">Предложить ингредиент</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'manage_recipes' %}">Управление рецептами</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'manage-recipes' %}">Управление рецептами</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'logout' %}">Выйти</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'manage-ingredients' %}">Управление ингридиентами</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'manage-units' %}">Управление весами</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'logout' %}">Выйти</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'login' %}">Войти</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'login' %}">Войти</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 hover-effect-btn-active" href="{% url 'registration' %}">Регистрация</a>
+                            <a class="nav-link text-white btn btn-outline-light btn-sm px-3 mx-1 hover-effect-btn-active" href="{% url 'registration' %}">Регистрация</a>
                         </li>
                     {% endif %}
                 </ul>

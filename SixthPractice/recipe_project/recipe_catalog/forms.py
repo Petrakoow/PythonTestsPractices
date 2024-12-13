@@ -1,39 +1,68 @@
 from django import forms
-from .models import Recipe, Ingredient, RecipeIngredients
+from .models import Recipe, Ingredient, RecipeIngredient, Unit
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 
 
-class ReceiptForm(forms.ModelForm):
+class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['name']
+        fields = ['title']  
 
     def __init__(self, *args, **kwargs):
-        super(ReceiptForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({
+        super(RecipeForm, self).__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs.update({
             'class': 'form-control rounded-pill',
             'placeholder': 'Введите название рецепта'
         })
-        self.fields['name'].label = 'Название рецепта' 
+        self.fields['title'].label = 'Название рецепта'
 
 
 class IngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
-        fields = ['name', 'measuring', 'cost']
+        fields = ['title', 'raw_weight', 'cooked_weight', 'cost', 'unit']
+
+    def __init__(self, *args, **kwargs):
+        super(IngredientForm, self).__init__(*args, **kwargs)
+
+        self.fields['title'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите название ингредиента'
+        })
+        self.fields['title'].label = 'Название ингредиента'
+        self.fields['raw_weight'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите сырой вес'
+        })
+        self.fields['cooked_weight'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите вес после готовки'
+        })
+        self.fields['cost'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите стоимость'
+        })
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
 
 
-class ReceiptIngredientForm(forms.ModelForm):
+
+class RecipeIngredientForm(forms.ModelForm):  
     class Meta:
-        model = RecipeIngredients
-        fields = ['ingredient', 'measure', 'measure_weight']
+        model = RecipeIngredient
+        fields = ['ingredient']  
 
+    def __init__(self, *args, **kwargs):
+        super(RecipeIngredientForm, self).__init__(*args, **kwargs)
+        self.fields['ingredient'].empty_label = 'Выберите ингредиент или оставьте пустым'
+        self.fields['ingredient'].required = False
+        self.fields['ingredient'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+        })
 
-class RecipeIngredientsForm(forms.ModelForm):
-    class Meta:
-        model = RecipeIngredients
-        fields = ['measure', 'measure_weight']
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -74,8 +103,14 @@ class UserRegistrationForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         password_confirm = self.cleaned_data.get('password_confirm')
         if password != password_confirm:
-            raise forms.ValidationError("Пароли не совпадают")
+            raise forms.ValidationError("Два пароля не совпадают")
         return password_confirm
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Пользователь с таким именем уже существует.")
+        return username
 
 
 class LoginForm(AuthenticationForm):
@@ -97,4 +132,29 @@ class LoginForm(AuthenticationForm):
             'class': 'form-control rounded-pill',
             'placeholder': 'Введите пароль'
         })
+
+class UnitForm(forms.ModelForm):
+    class Meta:
+        model = Unit
+        fields = ['name', 'conversion_to_grams']
+
+    def __init__(self, *args, **kwargs):
+        super(UnitForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите название единицы измерения'
+        })
+        self.fields['name'].label = 'Название единицы измерения'
+
+        self.fields['conversion_to_grams'].widget.attrs.update({
+            'class': 'form-control rounded-pill',
+            'placeholder': 'Введите коэффициент конверсии в граммы'
+        })
+        self.fields['conversion_to_grams'].label = 'Коэффициент конверсии'
+    
+    def clean_conversion_to_grams(self):
+        conversion = self.cleaned_data.get('conversion_to_grams')
+        if conversion <= 0:
+            raise forms.ValidationError("Коэффициент должен быть больше 0.")
+        return conversion
 

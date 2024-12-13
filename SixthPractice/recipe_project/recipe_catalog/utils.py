@@ -1,4 +1,4 @@
-from .models import Ingredient, RecipeIngredients, Recipe
+from .models import Recipe
 
 
 def check_recipe_existence(recipe_id):

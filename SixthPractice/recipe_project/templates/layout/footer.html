@@ -1,4 +1,4 @@
-<footer class="bg-primary text-white py-4">
+<footer class="bg-primary text-white py-4 mt-4">
     <div class="container">
         <div class="row text-center text-md-left">
 
@@ -17,13 +17,19 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li>
-                            <a href="{% url 'my_recipes' %}" class="text-white text-decoration-none">Мои рецепты</a>
+                            <a href="{% url 'your-recipes' %}" class="text-white text-decoration-none">Мои рецепты</a>
                         </li>
                         <li>
-                            <a href="{% url 'add_ingredient' %}" class="text-white text-decoration-none">Предложить ингредиент</a>
+                            <a href="{% url 'add-ingredient' %}" class="text-white text-decoration-none">Предложить ингредиент</a>
                         </li>
                         <li>
-                            <a href="{% url 'manage_recipes' %}" class="text-white text-decoration-none">Управление рецептами</a>
+                            <a href="{% url 'manage-recipes' %}" class="text-white text-decoration-none">Управление рецептами</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manage-ingredients' %}" class="text-white text-decoration-none">Управление ингридиентами</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'manage-units' %}" class="text-white text-decoration-none">Управление весами</a>
                         </li>
                         <li>
                             <a href="{% url 'logout' %}" class="text-white text-decoration-none">Выйти</a>

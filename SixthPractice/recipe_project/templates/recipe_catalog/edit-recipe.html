@@ -1,0 +1,15 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Редактировать рецепт{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Редактирование рецепта: {{ recipe.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-warning">Сохранить изменения</button>
+        <a href="{% url 'manage-recipes' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

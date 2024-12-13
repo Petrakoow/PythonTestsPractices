@@ -1,0 +1,33 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Добавить ингредиент{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Добавить новый ингредиент</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <ul class="mg-3">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Добавить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

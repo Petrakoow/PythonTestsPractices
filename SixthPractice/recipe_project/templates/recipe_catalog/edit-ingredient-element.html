@@ -1,0 +1,15 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Редактировать сам ингредиент{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Редактирование ингредиента: {{ ingredient.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-warning">Сохранить изменения</button>
+        <a href="{% url 'manage-ingredients' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

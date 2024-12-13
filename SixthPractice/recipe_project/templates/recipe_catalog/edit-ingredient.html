@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends '../layout/layout.html' %}
 
 {% block title %}Редактирование ингредиентов{% endblock %}
 
@@ -9,8 +9,10 @@
     <div class="form-group">
         <label for="ingredient_id">Выберите ингредиент:</label>
         <select name="ingredient_id" id="ingredient_id" class="form-control">
-            {% for ingredient in ingredients %}
-            <option value="{{ ingredient.ingredient.id }}">{{ ingredient.ingredient.name }}</option>
+            {% for ingredient in recipe_ingredients %}
+                <option value="{{ ingredient.ingredient.id }}" {% if ingredient.ingredient.id == selected_ingredient_id %}selected{% endif %}>
+                    {{ ingredient.ingredient.title }}
+                </option>
             {% endfor %}
         </select>
     </div>

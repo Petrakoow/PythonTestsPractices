@@ -9,14 +9,14 @@
         <h2 class="mb-4 text-primary font-weight-bold text-left">Рецепты</h2>
 
         <p class="text-muted mb-4">
-            На этой странице отображаются рецепты, добавленные в ваш аккаунт. Если вы только начали, ваши рецепты будут отображаться здесь после того, как вы их создадите.
+            На этой странице отображаются рецепты, добавленные всеми пользователями. Если вы только начали, ваши рецепты будут отображаться здесь после того, как вы их создадите.
             Если у вас нет рецептов, создайте первый, нажав кнопку ниже, чтобы начать делиться вашими кулинарными идеями с другими!
         </p>
         
         {% if user.is_authenticated %}
             <p class="text-muted">
                 Вы авторизованы как {{ user.username }}. Теперь вы можете добавлять, редактировать и управлять своими рецептами. 
-                Это ваше пространство для кулинарных творений. Не забудьте поделиться рецептами с друзьями и получать отзывы!
+                Это ваше пространство для кулинарных творений. Не забудьте поделиться рецептами с друзьями!
             </p>
         {% else %}
             <p class="text-muted">
@@ -25,7 +25,7 @@
             </p>
         {% endif %}
         
-
+        <h3>Рецепты всего мира!</h3>
         {% if recipes_len == 0 %}
             <div class="card text-center shadow-sm border-0" style="background-color: #f8f9fa;">
                 <div class="card-body py-5">
@@ -39,11 +39,14 @@
                 {% for recipe in recipes %}
                     <a 
                         class="list-group-item list-group-item-action shadow-sm mb-2 rounded" 
-                        href="/recipe/{{ recipe.id }}" 
+                        href="/recipe-information/{{ recipe.id }}" 
                         style="background-color: #ffffff; transition: transform 0.2s;">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-dark font-weight-bold">{{ recipe.name }}</span>
-                            <span class="badge badge-primary">{{ recipe.category }}</span>
+                            <span class="text-dark font-weight-bold">{{ recipe.title }}</span>
+                            <div class="d-flex flex-column text-right">
+                                <span class="text-muted small">{{ recipe.author.username }}</span>
+                                <span class="badge badge-primary">{{ recipe.category }}</span>
+                            </div>
                         </div>
                     </a>
                 {% endfor %}

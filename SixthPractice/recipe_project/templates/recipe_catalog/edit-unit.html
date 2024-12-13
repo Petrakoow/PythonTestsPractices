@@ -1,0 +1,18 @@
+{% extends '../layout/layout.html' %}
+
+{% block title %}Редактировать единицу измерения{% endblock %}
+
+{% block content %}
+<div class="container mt-4 p-0">
+    <h2 class="text-center mb-4">Редактировать единицу измерения</h2>
+
+    <form method="post" class="shadow-sm p-4 rounded bg-light border">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-warning px-4 text-white">Сохранить изменения</button>
+            <a href="{% url 'manage-units' %}" class="btn btn-secondary px-4 text-white">Отменить</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
